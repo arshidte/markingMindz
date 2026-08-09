@@ -68,7 +68,7 @@
 
 /* ---------- Reset ---------- */
 *,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
-html{ scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+html{ scroll-behavior:smooth; -webkit-text-size-adjust:100%; overflow-x:hidden; max-width:100%; }
 body{
   background:var(--canvas);
   color:var(--body);
@@ -115,19 +115,22 @@ body::before{
    NAV
    ============================================================ */
 .nav{
-  position:sticky; top:0; z-index:60;
-  background:color-mix(in srgb, var(--canvas) 82%, transparent);
+  position:sticky; top:16px; z-index:60;
+  padding-inline:16px;            /* keeps the pill off the screen edges */
+  background:transparent;
+  pointer-events:none;            /* transparent gutter doesn't block clicks */
+}
+.nav__inner{
+  display:flex; align-items:center; gap:20px; height:64px;
+  padding-inline:20px;
+  pointer-events:auto;
+  background:color-mix(in srgb, var(--canvas) 80%, transparent);
   backdrop-filter:saturate(140%) blur(14px);
-  border-bottom:1px solid var(--hairline);
+  border:1px solid var(--hairline);
+  border-radius:16px;
+  box-shadow:0 10px 30px -16px rgba(20,25,15,.30), 0 1px 0 rgba(255,255,255,.45) inset;
 }
-.nav__inner{ display:flex; align-items:center; gap:20px; height:66px; }
-.brand{ display:flex; align-items:center; gap:12px; }
-.brand__mark{ width:34px; height:34px; flex:none; }
-.brand__word{
-  font-family:'JetBrains Mono',monospace; font-weight:800; font-size:20px;
-  letter-spacing:-.03em; color:var(--ink);
-}
-.brand__word b{ color:var(--green-darker); font-weight:800; }
+.brand{ display:flex; align-items:center; }
 .nav__links{ display:flex; align-items:center; gap:4px; margin-left:auto; }
 .nav__link{
   font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:500;
@@ -179,13 +182,13 @@ body::before{
   display:grid; grid-template-columns:1.05fr .95fr; gap:56px; align-items:center;
 }
 .badge{
-  display:inline-flex; align-items:center; gap:10px;
+  display:inline-flex; align-items:center; gap:10px; flex-wrap:wrap; max-width:100%;
   font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:500;
   color:var(--charcoal); background:var(--surface-soft);
   border:1px solid var(--hairline); border-radius:var(--r-full);
   padding:6px 14px 6px 8px;
 }
-.badge .dot{ width:8px; height:8px; border-radius:50%; background:var(--green-deep);
+.badge .dot{ width:8px; height:8px; flex:none; border-radius:50%; background:var(--green-deep);
   box-shadow:0 0 0 4px var(--green-tint); animation:pulse 2.4s var(--ease) infinite; }
 .badge b{ color:var(--ink); font-weight:700; }
 @keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:.45} }
@@ -234,7 +237,7 @@ body::before{
   font-family:'JetBrains Mono',monospace; font-size:13.5px; line-height:1.85;
   padding:22px 20px 26px; color:var(--on-dark); min-height:300px;
 }
-.term__line{ white-space:pre-wrap; }
+.term__line{ white-space:pre-wrap; overflow-wrap:anywhere; word-break:break-word; }
 .term__body .prompt{ color:var(--green); }
 .term__body .path{ color:#7fb0e0; }
 .term__body .cmd{ color:var(--on-dark); }
@@ -277,16 +280,15 @@ body::before{
    SERVICES (bento)
    ============================================================ */
 .sec-head{ max-width:640px; }
-.bento{ margin-top:52px; display:grid; grid-template-columns:repeat(6,1fr); gap:16px; }
+.bento{ margin-top:52px; display:grid; grid-template-columns:1fr; gap:16px; }
 .card{
-  grid-column:span 2; background:var(--canvas);
+  display:flex; flex-direction:column; height:100%; background:var(--canvas);
   border:1px solid var(--hairline); border-radius:var(--r-md);
   padding:26px; position:relative; overflow:hidden;
   transition:transform .2s var(--ease), border-color .2s var(--ease), box-shadow .2s var(--ease);
 }
 .card:hover{ transform:translateY(-4px); border-color:var(--green-deep);
   box-shadow:0 22px 40px -28px rgba(20,25,15,.35); }
-.card--wide{ grid-column:span 3; }
 .card__key{
   font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:700;
   color:var(--green-darker); display:flex; align-items:center; gap:8px;
@@ -297,19 +299,36 @@ body::before{
   font-weight:700; letter-spacing:-.02em; margin-top:14px;
 }
 .card p{ margin-top:10px; font-size:15px; color:var(--mute); }
-.card__tags{ display:flex; flex-wrap:wrap; gap:6px; margin-top:18px; }
+.card__tags{ display:flex; flex-wrap:wrap; gap:6px; margin-top:auto; padding-top:18px; }
 .tag{
   font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--charcoal);
   background:var(--surface-soft); border:1px solid var(--hairline);
   padding:3px 9px; border-radius:var(--r-full);
 }
-.card__glyph{
-  position:absolute; right:-8px; top:-10px; font-family:'JetBrains Mono',monospace;
-  font-size:88px; font-weight:800; color:var(--surface-card); z-index:0; line-height:1;
-  transition:color .2s var(--ease);
+.card__icon{
+  width:52px; height:52px; border-radius:12px; flex:none;
+  display:grid; place-items:center; margin-bottom:20px;
+  background:var(--surface-soft); border:1px solid var(--hairline);
+  color:var(--green-darker);
+  transition:background .2s var(--ease), color .2s var(--ease), transform .25s var(--ease);
 }
-.card:hover .card__glyph{ color:var(--green-tint); }
+.card__icon svg{ width:26px; height:26px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.card:hover .card__icon{ background:var(--green); color:var(--ink); transform:translateY(-2px) rotate(-3deg); }
 .card > *{ position:relative; z-index:1; }
+
+/* bento: mobile 1-col → tablet 2-col → desktop 12-col two-row layout (uneven, equal height) */
+@media (min-width:641px){
+  .bento{ grid-template-columns:repeat(2,1fr); }
+  .bento > :nth-child(1){ grid-column:span 2; }
+}
+@media (min-width:1001px){
+  .bento{ grid-template-columns:repeat(12,1fr); grid-auto-rows:1fr; }
+  .bento > :nth-child(1){ grid-column:span 7; }
+  .bento > :nth-child(2){ grid-column:span 5; }
+  .bento > :nth-child(3){ grid-column:span 4; }
+  .bento > :nth-child(4){ grid-column:span 3; }
+  .bento > :nth-child(5){ grid-column:span 5; }
+}
 
 /* ============================================================
    STATS
@@ -441,18 +460,146 @@ body::before{
 .drawer__top{ display:flex; align-items:center; justify-content:space-between; height:66px; }
 .drawer__close{ width:44px; height:44px; display:flex; align-items:center; justify-content:center; }
 .drawer__close svg{ width:26px; height:26px; }
-.drawer a{
+.drawer a:not(.brand):not(.btn){
   font-family:'JetBrains Mono',monospace; font-weight:700; font-size:26px; color:var(--ink);
   padding:16px 0; border-bottom:1px solid var(--hairline); display:flex; align-items:center; gap:12px;
 }
-.drawer a::before{ content:"[+]"; color:var(--green-deep); font-size:16px; }
+.drawer a:not(.brand):not(.btn)::before{ content:"[+]"; color:var(--green-deep); font-size:16px; }
 .drawer .btn{ margin-top:24px; justify-content:center; }
 
 /* ============================================================
    SCROLL REVEAL
    ============================================================ */
-.r-up{ opacity:0; transform:translateY(20px); transition:opacity .6s var(--ease), transform .6s var(--ease); }
+.r-up{ opacity:0; transform:translateY(22px); transition:opacity .7s var(--ease), transform .7s var(--ease); }
 .r-up.in{ opacity:1; transform:none; }
+/* stagger children of a revealed group */
+.stagger > *{ opacity:0; }
+.stagger.in > *{ animation:fadeUp .6s var(--ease) both; }
+.stagger.in > *:nth-child(1){ animation-delay:.00s }
+.stagger.in > *:nth-child(2){ animation-delay:.08s }
+.stagger.in > *:nth-child(3){ animation-delay:.16s }
+.stagger.in > *:nth-child(4){ animation-delay:.24s }
+.stagger.in > *:nth-child(5){ animation-delay:.32s }
+.stagger.in > *:nth-child(6){ animation-delay:.40s }
+@keyframes fadeUp{ from{ opacity:0; transform:translateY(24px) } to{ opacity:1; transform:none } }
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+
+/* --- scroll progress bar --- */
+.progress{
+  position:fixed; top:0; left:0; height:3px; width:0%; z-index:100;
+  background:linear-gradient(90deg, var(--green-deep), var(--green-bright));
+  box-shadow:0 0 12px var(--green-glow); transition:width .08s linear;
+}
+
+/* --- nav condense on scroll --- */
+.nav__inner{ transition:height .3s var(--ease), box-shadow .3s var(--ease), background .3s var(--ease); }
+.nav.scrolled .nav__inner{
+  height:56px;
+  background:color-mix(in srgb, var(--canvas) 92%, transparent);
+  box-shadow:0 14px 34px -16px rgba(20,25,15,.42), 0 1px 0 rgba(255,255,255,.55) inset;
+}
+
+/* --- hero staggered entrance --- */
+.hero .badge,
+.hero h1,
+.hero p.sub,
+.hero__cta,
+.hero__trust{ opacity:0; animation:heroIn .8s var(--ease) forwards; }
+.hero .badge{ animation-delay:.05s }
+.hero h1{ animation-delay:.16s }
+.hero p.sub{ animation-delay:.30s }
+.hero__cta{ animation-delay:.42s }
+.hero__trust{ animation-delay:.54s }
+.hero .term-wrap{ opacity:0; animation:termIn 1s var(--ease) .35s forwards; }
+@keyframes heroIn{ from{ opacity:0; transform:translateY(26px) } to{ opacity:1; transform:none } }
+@keyframes termIn{ from{ opacity:0; transform:translateY(30px) scale(.97) } to{ opacity:1; transform:none } }
+
+/* --- animated highlight underline swipe --- */
+.hero h1 .hl::after{ transform:scaleX(0); transform-origin:left; animation:swipe .7s var(--ease) 1.0s forwards; }
+@keyframes swipe{ to{ transform:scaleX(1) } }
+
+/* --- floating aurora glow drift --- */
+.hero__glow{ animation:drift 12s ease-in-out infinite alternate; }
+@keyframes drift{
+  0%{ transform:translateX(-50%) translateY(0) scale(1); opacity:.5 }
+  100%{ transform:translateX(-46%) translateY(24px) scale(1.08); opacity:.62 }
+}
+
+/* --- logo (full wordmark via <symbol>/<use>) --- */
+.logo{ display:block; height:30px; width:auto; overflow:visible; }
+.footer .logo{ height:26px; }
+.drawer .logo{ height:24px; }
+.brand{ --logo-ink:var(--ink); --logo-accent:var(--green); --mh:0; }
+.brand:hover{ --logo-accent:var(--green-bright); --mh:1; }
+#mm-logo .p-ink{ fill:var(--logo-ink); transition:fill .25s var(--ease); }
+#mm-logo .p-accent{ fill:var(--logo-accent); transition:fill .25s var(--ease); }
+/* entrance: every element fades + tiny rise, staggered */
+#mm-logo path{ opacity:0; animation:logoIn .5s var(--ease) both; }
+#mm-logo path:nth-child(1){ animation-delay:.00s }
+#mm-logo path:nth-child(2){ animation-delay:.035s }
+#mm-logo path:nth-child(3){ animation-delay:.07s }
+#mm-logo path:nth-child(4){ animation-delay:.105s }
+#mm-logo path:nth-child(5){ animation-delay:.14s }
+#mm-logo path:nth-child(6){ animation-delay:.175s }
+#mm-logo path:nth-child(7){ animation-delay:.21s }
+#mm-logo path:nth-child(8){ animation-delay:.245s }
+#mm-logo path:nth-child(9){ animation-delay:.28s }
+#mm-logo path:nth-child(10){ animation-delay:.315s }
+#mm-logo path:nth-child(11){ animation-delay:.35s }
+#mm-logo path:nth-child(12){ animation-delay:.385s }
+#mm-logo path:nth-child(13){ animation-delay:.42s }
+#mm-logo path:nth-child(14){ animation-delay:.455s }
+#mm-logo path:nth-child(15){ animation-delay:.49s }
+#mm-logo path:nth-child(16){ animation-delay:.525s }
+#mm-logo path:nth-child(17){ animation-delay:.56s }
+/* the three icon bars get a distinct scale-pop (rule after nth-child to win) */
+/* `backwards` fill (not `both`) so `transform` is free for the hover movement */
+#mm-logo path.mm-mark{
+  transform-box:fill-box; transform-origin:center; opacity:1;
+  animation:logoPop .6s var(--ease) backwards;
+  transition:transform .45s cubic-bezier(.34,1.56,.64,1);
+}
+/* hover movement — the bars fan apart and the green one pops (driven by inherited --mh) */
+#mm-logo path.mm-mark:nth-child(10){ animation-delay:.00s; transform:translateY(calc(var(--mh) * -3.5px)) translateX(calc(var(--mh) * 2px)) rotate(calc(var(--mh) * 8deg)); }
+#mm-logo path.mm-mark:nth-child(11){ animation-delay:.07s; transform:translateY(calc(var(--mh) * 3.5px)) translateX(calc(var(--mh) * -2px)) rotate(calc(var(--mh) * 8deg)); }
+#mm-logo path.mm-mark:nth-child(13){ animation-delay:.14s; transform:translateY(calc(var(--mh) * -1px)) scale(calc(1 + var(--mh) * 0.18)) rotate(calc(var(--mh) * -10deg)); }
+@keyframes logoIn{ from{ opacity:0; transform:translateY(6px) } to{ opacity:1; transform:none } }
+@keyframes logoPop{ 0%{ opacity:0; transform:scale(.5) } 55%{ opacity:1; transform:scale(1.12) } 100%{ opacity:1; transform:scale(1) } }
+
+/* --- button shine sweep --- */
+.btn{ position:relative; overflow:hidden; }
+.btn::after{
+  content:""; position:absolute; top:0; left:-140%; width:60%; height:100%;
+  background:linear-gradient(120deg, transparent, rgba(255,255,255,.55), transparent);
+  transform:skewX(-20deg); pointer-events:none;
+}
+.btn:hover::after{ animation:shine .7s var(--ease); }
+.btn--ghost::after{ background:linear-gradient(120deg, transparent, var(--green-tint), transparent); }
+@keyframes shine{ to{ left:150% } }
+
+/* --- infinite marquee logo strip --- */
+.marquee{ overflow:hidden; -webkit-mask-image:linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); mask-image:linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
+.marquee__track{ display:flex; width:max-content; gap:44px; animation:scrollX 26s linear infinite; }
+.marquee:hover .marquee__track{ animation-play-state:paused; }
+@keyframes scrollX{ to{ transform:translateX(-50%) } }
+
+/* --- card cursor spotlight --- */
+.card{ --mx:50%; --my:50%; }
+.card::before{
+  content:""; position:absolute; inset:0; z-index:0; opacity:0; transition:opacity .3s var(--ease);
+  background:radial-gradient(240px circle at var(--mx) var(--my), var(--green-tint), transparent 60%);
+}
+.card:hover::before{ opacity:1; }
+
+/* --- process step bar grows on reveal --- */
+.step__bar{ width:0; transition:width .7s var(--ease) .2s; }
+.step.in .step__bar{ width:38px; }
+
+/* --- terminal 3D tilt --- */
+.term{ transform:perspective(1000px); transition:transform .25s var(--ease); will-change:transform; }
 
 /* ============================================================
    RESPONSIVE
@@ -460,8 +607,6 @@ body::before{
 @media (max-width:1000px){
   .hero__grid{ grid-template-columns:1fr; gap:44px; }
   .term{ max-width:560px; }
-  .bento{ grid-template-columns:repeat(4,1fr); }
-  .card, .card--wide{ grid-column:span 2; }
   .split{ grid-template-columns:1fr; gap:36px; }
   .quotes{ grid-template-columns:1fr; }
   .steps{ grid-template-columns:1fr 1fr; }
@@ -480,35 +625,63 @@ body::before{
 @media (max-width:560px){
   :root{ --sp-section:76px; }
   .wrap{ padding-inline:18px; }
-  .bento{ grid-template-columns:1fr; }
-  .card, .card--wide{ grid-column:span 1; }
+  .nav{ top:10px; padding-inline:12px; }
+  .nav__inner{ padding-inline:16px; border-radius:14px; }
   .steps{ grid-template-columns:1fr; }
   .stats__grid{ grid-template-columns:1fr; }
   .stat{ border-right:0; }
   .footer__grid{ grid-template-columns:1fr; }
-  .hero__cta .btn{ flex:1; }
+  .hero__cta{ flex-direction:column; align-items:stretch; }
+  .hero__cta .btn{ width:100%; flex:none; }
+  .term__body{ font-size:12px; padding:18px 16px 22px; min-height:0; }
+  .badge{ border-radius:14px; }
 }
 
 @media (prefers-reduced-motion:reduce){
   *{ animation:none !important; transition:none !important; }
-  .r-up{ opacity:1; transform:none; }
-  .reveal-line{ opacity:1; transform:none; }
+  .r-up, .reveal-line, .stagger.in > *,
+  .hero .badge, .hero h1, .hero p.sub, .hero__cta, .hero__trust, .hero .term-wrap{
+    opacity:1 !important; transform:none !important;
+  }
+  .hero h1 .hl::after{ transform:scaleX(1); }
+  .step__bar{ width:38px; }
+  .progress{ display:none; }
+  #mm-logo path{ opacity:1 !important; transform:none !important; }
 }
 </style>
 </head>
 <body>
 
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<!-- ============ LOGO SYMBOL (defined once, reused everywhere) ============ -->
+<svg width="0" height="0" aria-hidden="true" style="position:absolute" focusable="false">
+  <symbol id="mm-logo" viewBox="0 0 937 153">
+    <path class="p-ink" d="M541.928 48.127C551.897 46.1088 562.218 50.586 569.818 56.7114C573.952 53.9949 578.15 51.3752 582.407 48.8541C582.874 67.8229 582.211 87.4964 582.531 106.559C582.691 116.269 580.199 124.595 573.198 131.719C562.41 142.69 546.186 140.529 531.621 140.423L531.557 127.367L531.845 125.744C537.479 121.474 561.555 134.003 567.148 110.918C553.205 119.025 538.503 120.674 525.059 110.208C517.82 104.572 513.11 96.3051 511.958 87.2123C510.81 77.6784 513.238 68.3294 519.219 60.7653C524.803 53.7026 532.979 49.1546 541.928 48.127ZM550.772 101.59C561.208 99.2199 567.77 88.878 565.456 78.442C563.142 68.0065 552.825 61.3946 542.363 63.6435C531.818 65.9102 525.127 76.3183 527.46 86.8406C529.792 97.3629 540.25 103.981 550.772 101.59Z"/>
+    <path class="p-accent" d="M845.925 27.16C849.226 28.8441 858.18 34.7324 861.12 36.9535L861.162 116.358C856.264 116.219 851.211 116.581 846.373 116.223C845.609 115.117 845.847 113.073 845.874 111.656C834.063 118.834 822.763 119.37 810.293 113.593C809.607 113.212 808.93 112.821 808.253 112.419C800.402 107.687 794.736 100.05 792.491 91.1679C790.209 82.0427 791.686 72.3841 796.588 64.355C801.229 56.5607 808.811 50.9582 817.632 48.8079C828.008 46.2942 836.957 48.2329 845.884 53.6619L845.925 27.16ZM827.921 101.938C838.53 101.11 846.496 91.9069 845.778 81.3038C845.061 70.7006 835.933 62.6496 825.31 63.2511C818.337 63.6462 812.113 67.7525 809.012 74.0045C805.912 80.2561 806.415 87.6891 810.329 93.4684C814.239 99.2477 820.961 102.482 827.921 101.938Z"/>
+    <path class="p-accent" d="M617.084 48.5093C617.797 48.4522 618.51 48.4161 619.224 48.4001C627.524 48.2243 634.255 51.1742 640.172 56.8412C651.449 46.4084 668.2 45.0603 679.495 56.1734C683.157 59.8222 685.727 64.4208 686.912 69.4502C688.183 74.7326 687.799 84.4766 687.781 90.2618C687.721 98.9733 687.73 107.685 687.808 116.397C682.709 116.206 677.432 116.311 672.32 116.348C672.141 106.724 672.471 96.8637 672.356 87.2343C672.32 84.1021 672.599 76.411 672.018 73.6858C671.51 71.299 670.312 69.1136 668.57 67.4004C663.764 62.5972 656.557 62.5474 651.655 67.4626C645.815 73.3145 648.449 83.9313 647.951 91.4301C647.818 93.4009 647.978 95.9553 647.987 97.9657C647.987 104.115 648.019 110.265 648.088 116.414C642.902 116.194 637.611 116.307 632.417 116.358L632.49 88.5702C632.508 80.0588 634.694 61.5102 617.518 64.2528C613.11 64.957 609.241 69.0871 608.555 73.5478C607.769 78.6503 608.039 84.6036 608.057 90.0627L608.171 116.419C602.981 116.208 597.663 116.307 592.459 116.346C592.235 94.0891 592.308 70.9272 592.514 48.6627C595.024 50.0014 599.807 53.2911 602.377 54.944C606.822 51.1496 611.477 49.6054 617.084 48.5093Z"/>
+    <path class="p-ink" d="M177.705 56.8914C188.711 46.044 206.119 45.3522 217.139 56.4977C220.566 59.9775 223.014 64.2966 224.238 69.0214C225.654 74.5125 225.251 84.4218 225.233 90.3811L225.137 116.353C220.128 116.395 215.042 116.331 210.026 116.314C209.981 104.119 209.999 91.9243 210.082 79.73C210.073 70.4769 205.585 62.5246 194.914 63.9577C182.275 65.6554 185.149 88.1235 185.22 97.9658L185.212 116.352L170.067 116.32C170.026 106.985 170.04 97.6502 170.106 88.3153C170.123 81.7226 171.431 72.4116 166.365 67.522C158.405 59.8382 146.537 64.8474 145.577 75.6912C145.125 80.7951 145.361 86.0569 145.387 91.1972L145.434 116.363L129.966 116.315L130.007 48.8002L139.826 54.9586C145.351 50.9596 147.715 49.8868 154.553 48.5317C154.858 48.5015 155.164 48.4787 155.47 48.4636C164.586 48.0101 171.037 50.8952 177.705 56.8914Z"/>
+    <path class="p-ink" d="M259.501 48.5932C266.892 47.8433 275.362 50.5735 280.629 55.8723C283.663 58.9214 285.81 62.7368 286.841 66.9103C288.083 71.9606 287.68 82.308 287.662 87.937L287.565 116.363L272.485 116.327L272.432 109.414C272.015 109.755 271.59 110.085 271.155 110.403C259.488 118.985 243.453 121.867 233.883 108.8C231.072 102.807 230.444 98.3438 232.399 91.7282C236.333 78.4172 249.766 73.8487 262.324 72.7982C264.81 72.5904 270.198 72.9143 271.983 71.9784L272.202 71.0613C268.246 58.4464 252.417 65.367 245.111 70.3365L236.091 57.7042C243.43 52.5995 250.544 49.5094 259.501 48.5932ZM254.629 101.867C261.89 99.898 266.343 94.041 269.935 87.8292C268.237 87.9274 264.728 88.0361 263.188 88.3015C257.43 88.956 252.02 89.6986 248.144 94.5489C243.747 100.052 247.883 102.897 253.676 102.028C253.994 101.98 254.312 101.926 254.629 101.867Z"/>
+    <path class="p-accent" d="M868.949 48.7119C877.208 49.0357 886.77 48.8224 895.106 48.8243C908.07 48.8827 921.034 48.8453 933.999 48.7124C933.87 53.9906 933.875 59.2712 934.012 64.5495C919.992 76.9918 905.889 89.3387 891.704 101.59L934.154 101.534C933.692 106.081 933.916 111.762 934.099 116.305L933.87 116.574C931.415 117.484 876.746 116.878 868.972 116.89L868.958 100.452C881.785 88.4517 896.821 75.8715 910.21 64.3545H868.972L868.949 48.7119Z"/>
+    <path class="p-ink" d="M361.688 27.4957C362.271 28.3759 362.041 71.4975 362.041 75.6418C369.324 67.7698 381.659 56.2542 389.664 48.8238C396.946 48.7695 404.328 48.8558 411.619 48.886C402.373 58.2299 391.232 69.0285 381.595 77.9153L406.863 109.364L412.28 116.195C406.636 116.543 398.601 116.356 392.766 116.38C385.848 108.46 377.206 97.1152 370.456 88.7349C367.599 91.5962 365.076 94.1201 362.02 96.769L361.953 116.358L346.848 116.322L346.869 36.8524C350.214 34.375 358.081 29.556 361.688 27.4957Z"/>
+    <path class="p-ink" d="M470.706 48.5508C471.661 48.4585 472.617 48.4156 473.577 48.422C481.841 48.4334 490.621 51.619 496.382 57.5947C507.193 68.8016 505.867 79.7815 505.83 93.7511L505.748 116.364L490.342 116.314C490.186 104.503 490.653 92.6066 490.383 80.8146C490.118 69.4913 482.275 63.4927 471.456 63.9691C459.315 67.0661 457.101 75.3541 457.266 86.661C457.408 96.4864 457.417 106.541 457.307 116.364L441.964 116.314C441.606 94.4759 441.715 70.6431 442.012 48.7924L453.418 55.8811C458.944 51.6642 463.81 49.5464 470.706 48.5508Z"/>
+    <path class="p-accent" d="M750.539 48.5526C751.197 48.4385 752.359 48.4311 753.049 48.4165C761.596 48.2224 769.878 51.4281 776.06 57.3284C780.404 61.5188 783.445 66.8692 784.822 72.7403C786.454 79.4258 785.718 107.426 785.892 116.379C780.793 116.218 775.603 116.314 770.495 116.356C770.449 104.762 770.833 92.9514 770.458 81.3673C770.115 70.7367 762.844 63.1822 751.828 63.9495C748.106 64.719 745.216 65.9293 742.491 68.6623C740.323 70.8454 738.796 73.578 738.069 76.5649C737.044 80.8598 737.575 109.987 737.598 116.338C732.416 116.265 727.235 116.272 722.05 116.36L722.041 48.8216C725.882 51.0052 729.636 53.5135 733.272 56.0131C738.21 51.5989 744.091 49.5469 750.539 48.5526Z"/>
+    <path class="p-ink mm-mark" d="M51.3828 5.58505C60.4371 4.76401 63.8819 12.0029 67.8049 18.5865C76.3695 32.9193 85.0955 47.0656 93.4405 61.5348C95.9012 65.801 96.6137 70.2741 94.1868 74.8787C92.269 78.5187 88.9605 80.2383 85.0932 81.3632C73.9509 81.5965 71.5789 74.5786 66.4669 65.7992C58.2151 50.9838 47.6938 36.49 40.4866 21.2495C37.1709 14.238 44.9245 7.28431 51.3828 5.58505Z"/>
+    <path class="p-ink mm-mark" d="M11.0976 75.393C21.993 74.6631 24.3188 80.4826 29.3124 89.0474C38.0496 104.399 48.4923 119.337 56.2845 135.135C59.1027 140.849 53.3981 148.831 47.4176 150.613C40.0594 151.237 36.3751 149.821 32.3922 143.425C23.8852 129.718 15.6971 115.815 7.38978 101.983C3.65011 95.7566 -0.956958 89.6151 2.60578 82.1674C4.45994 78.2917 7.23924 76.7873 11.0976 75.393Z"/>
+    <path class="p-ink" d="M297.106 48.8162C301.762 51.8597 306.464 54.8316 311.212 57.7304C321.078 51.3624 329.87 49.2144 341.561 49.3099L341.569 64.4062C329.083 66.1088 318.748 66.3289 313.174 79.9368C311.442 85.4453 312.316 108.741 312.065 116.359L296.993 116.342C296.927 114.012 296.895 111.47 296.946 109.146C297.385 89.2479 296.189 68.6463 297.106 48.8162Z"/>
+    <path class="p-accent mm-mark" d="M42.4276 57.1745C46.9626 56.8635 51.5126 59.2115 54.3524 62.9698C61.4879 72.4142 76.3494 95.045 55.0607 99.1002C50.3292 99.3756 46.0915 98.0575 43.1674 93.889C35.7383 83.2969 20.7417 62.5565 42.4276 57.1745Z"/>
+    <path class="p-accent" d="M711.523 48.8572C712.451 49.7706 712.076 109.285 712.163 116.412C707.311 116.19 701.947 116.307 697.054 116.322L696.917 116.228C696.058 115.113 696.446 64.5577 696.455 58.7346C700.594 55.5504 706.982 51.7372 711.523 48.8572Z"/>
+    <path class="p-ink" d="M431.763 48.9778C432.453 49.9497 432.131 109.748 432.127 116.354L417.215 116.354C416.211 114.712 416.654 64.8989 416.66 58.6857C420.018 56.0103 427.87 51.3943 431.763 48.9778Z"/>
+    <path class="p-accent" d="M703.081 27.2147C707.741 26.5976 712.044 29.7958 712.79 34.4288C713.535 39.0618 710.453 43.4456 705.834 44.3173C702.734 44.9029 699.56 43.76 697.544 41.3332C695.532 38.9063 694.992 35.5783 696.144 32.6433C697.297 29.7082 699.954 27.6292 703.081 27.2147Z"/>
+    <path class="p-ink" d="M424.103 27.2042C428.853 27.0901 432.802 30.8321 432.938 35.576C433.074 40.3198 429.345 44.2809 424.596 44.4378C419.816 44.5958 415.819 40.8425 415.683 36.0683C415.546 31.2941 419.322 27.319 424.103 27.2042Z"/>
+  </symbol>
+</svg>
+
 <!-- ============ NAV ============ -->
 <header class="nav">
   <div class="wrap nav__inner">
     <a href="#top" class="brand" aria-label="Marking Mindz home">
-      <!-- Logo mark: two black bars + green center bar, diagonal -->
-      <svg class="brand__mark" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-        <rect x="23" y="1.5" width="8" height="21" rx="4" transform="rotate(-38 27 12)" fill="var(--ink)"/>
-        <rect x="16" y="13.5" width="8" height="13" rx="4" transform="rotate(-38 20 20)" fill="var(--green)"/>
-        <rect x="9"  y="17.5" width="8" height="21" rx="4" transform="rotate(-38 13 28)" fill="var(--ink)"/>
-      </svg>
-      <span class="brand__word">marking<b>mindz</b></span>
+      <svg class="logo" viewBox="0 0 937 153" role="img" aria-label="markingmindz"><use href="#mm-logo"/></svg>
     </a>
 
     <nav class="nav__links" aria-label="Primary">
@@ -528,7 +701,9 @@ body::before{
 <!-- ============ MOBILE DRAWER ============ -->
 <div class="drawer" id="drawer" aria-hidden="true">
   <div class="drawer__top">
-    <span class="brand__word">marking<b>mindz</b></span>
+    <a href="#top" class="brand" aria-label="Marking Mindz home">
+      <svg class="logo" viewBox="0 0 937 153" role="img" aria-label="markingmindz"><use href="#mm-logo"/></svg>
+    </a>
     <button class="drawer__close" id="drawerClose" aria-label="Close menu">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
@@ -547,7 +722,7 @@ body::before{
   <div class="hero__glow"></div>
   <div class="wrap hero__grid">
     <div>
-      <span class="badge"><span class="dot"></span> <b>Now onboarding</b> · Q3 2026 project slots open</span>
+      <span class="badge"><span class="dot"></span> <b>Building digital products </b> that move people forward</span>
       <h1>We ship the software your <span class="hl">business runs on.</span></h1>
       <p class="sub">Marking Mindz is an IT services studio building fast, secure, scalable products — web &amp; mobile apps, cloud infrastructure, and AI automation. Engineered clean, delivered on time.</p>
       <div class="hero__cta">
@@ -562,6 +737,7 @@ body::before{
     </div>
 
     <!-- Terminal mockup — the "visual moment" -->
+    <div class="term-wrap">
     <div class="term" id="term" aria-hidden="true">
       <div class="term__bar">
         <span class="term__dot r"></span><span class="term__dot y"></span><span class="term__dot g"></span>
@@ -577,6 +753,7 @@ body::before{
         <div class="term__line reveal-line"><span class="prompt">marking@mindz</span> <span class="path">~/your-product</span> <span class="dim">$</span> <span class="term__caret"></span></div>
       </div>
     </div>
+    </div>
   </div>
 </section>
 
@@ -584,8 +761,11 @@ body::before{
 <section class="strip">
   <div class="wrap strip__inner">
     <p class="strip__label">Trusted by teams building the future</p>
-    <div class="strip__row">
-      <span>north/loop</span><span>Verta</span><span>Kettle&amp;Co</span><span>Onyx</span><span>Meridian</span><span>Pacely</span>
+    <div class="marquee strip__row" style="display:block">
+      <div class="marquee__track">
+        <span>Hope Foundation Kerala</span><span>The Strive Ads</span><span>Himaz</span><span>Amogha Ayurveda Dubai</span><span>Entry Lines</span><span>Capledg</span><span>Accountamy</span><span>Educlues</span>
+        <span aria-hidden="true">Hope Foundation Kerala</span><span aria-hidden="true">The Strive Ads</span><span aria-hidden="true">Himaz</span><span aria-hidden="true">Amogha Ayurveda Dubai</span><span aria-hidden="true">Entry Lines</span><span aria-hidden="true">Capledg</span><span aria-hidden="true">Accountamy</span><span aria-hidden="true">Educlues</span>
+      </div>
     </div>
   </div>
 </section>
@@ -599,38 +779,38 @@ body::before{
       <p class="lede">From first line of code to 24/7 operations — a full-stack partner that scales with you.</p>
     </div>
 
-    <div class="bento">
-      <article class="card card--wide r-up">
-        <span class="card__glyph mono">&lt;/&gt;</span>
+    <div class="bento stagger">
+      <article class="card card--wide">
+        <span class="card__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6 3 12l5 6"/><path d="M16 6l5 6-5 6"/><path d="M13.5 4 10.5 20"/></svg></span>
         <span class="card__key">web + app dev</span>
         <h3>Web &amp; Mobile Development</h3>
         <p>Custom web platforms, iOS &amp; Android apps, and internal tools built on a modern, maintainable stack.</p>
         <div class="card__tags"><span class="tag">React</span><span class="tag">Next.js</span><span class="tag">Flutter</span><span class="tag">Node</span></div>
       </article>
 
-      <article class="card r-up">
-        <span class="card__glyph mono">☁</span>
+      <article class="card">
+        <span class="card__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18a4.5 4.5 0 0 1-.5-8.97 6 6 0 0 1 11.5.97h.2a3.8 3.8 0 0 1 .3 7.99z"/></svg></span>
         <span class="card__key">cloud</span>
         <h3>Cloud &amp; DevOps</h3>
         <p>AWS/GCP setup, containers, and CI/CD so you ship faster with zero downtime.</p>
       </article>
 
-      <article class="card r-up">
-        <span class="card__glyph mono">✦</span>
+      <article class="card">
+        <span class="card__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M18 15l.7 1.8L20.5 17.5l-1.8.7L18 20l-.7-1.8L15.5 17.5l1.8-.7z"/></svg></span>
         <span class="card__key">ai</span>
         <h3>AI &amp; Automation</h3>
         <p>LLM copilots, workflow automation, and data pipelines that cut busywork.</p>
       </article>
 
-      <article class="card r-up">
-        <span class="card__glyph mono">◈</span>
+      <article class="card">
+        <span class="card__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></span>
         <span class="card__key">design</span>
         <h3>UI / UX Design</h3>
         <p>Research-led product design and design systems your users actually love.</p>
       </article>
 
-      <article class="card card--wide r-up">
-        <span class="card__glyph mono">⛨</span>
+      <article class="card card--wide">
+        <span class="card__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5.5c0 4.4-3 7.6-7 9-4-1.4-7-4.6-7-9V6z"/><path d="M9 12l2.2 2.2L15 10.5"/></svg></span>
         <span class="card__key">security + support</span>
         <h3>Security &amp; Managed Support</h3>
         <p>Audits, monitoring, and round-the-clock maintenance to keep everything fast, safe and online.</p>
@@ -645,10 +825,10 @@ body::before{
   <div class="wrap">
     <div class="stats r-up">
       <div class="stats__grid">
-        <div class="stat"><div class="num">60+</div><div class="lbl">// products shipped</div></div>
-        <div class="stat"><div class="num">99.9%</div><div class="lbl">// uptime delivered</div></div>
-        <div class="stat"><div class="num">8+ yrs</div><div class="lbl">// engineering craft</div></div>
-        <div class="stat"><div class="num">4.9/5</div><div class="lbl">// client rating</div></div>
+        <div class="stat"><div class="num" data-count="60" data-suffix="+">0</div><div class="lbl">// products shipped</div></div>
+        <div class="stat"><div class="num" data-count="99.9" data-suffix="%" data-dec="1">0</div><div class="lbl">// uptime delivered</div></div>
+        <div class="stat"><div class="num" data-count="8" data-prefix="" data-suffix="+ yrs">0</div><div class="lbl">// engineering craft</div></div>
+        <div class="stat"><div class="num" data-count="4.9" data-suffix="/5" data-dec="1">0</div><div class="lbl">// client rating</div></div>
       </div>
     </div>
   </div>
@@ -694,16 +874,16 @@ body::before{
       <span class="eyebrow">Clients</span>
       <h2 class="h2">Work that speaks for itself.</h2>
     </div>
-    <div class="quotes">
-      <figure class="quote r-up">
+    <div class="quotes stagger">
+      <figure class="quote">
         <p>They rebuilt our platform in 10 weeks and cut load times by 70%. Genuinely the most reliable dev team we've worked with.</p>
         <figcaption class="quote__who"><span class="avatar">AR</span><span><b>Aisha R.</b><small>CTO, north/loop</small></span></figcaption>
       </figure>
-      <figure class="quote r-up">
+      <figure class="quote">
         <p>Fixed quote, shipped on time, and we owned everything at the end. That never happens with agencies.</p>
         <figcaption class="quote__who"><span class="avatar">DM</span><span><b>Daniel M.</b><small>Founder, Verta</small></span></figcaption>
       </figure>
-      <figure class="quote r-up">
+      <figure class="quote">
         <p>Their AI automation saved our ops team ~30 hours a week. Paid for itself in the first month.</p>
         <figcaption class="quote__who"><span class="avatar">SK</span><span><b>Sana K.</b><small>COO, Kettle&amp;Co</small></span></figcaption>
       </figure>
@@ -765,12 +945,7 @@ body::before{
   <div class="wrap footer__grid">
     <div class="footer__brand">
       <a href="#top" class="brand" aria-label="Marking Mindz home">
-        <svg class="brand__mark" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-          <rect x="23" y="1.5" width="8" height="21" rx="4" transform="rotate(-38 27 12)" fill="var(--ink)"/>
-          <rect x="16" y="13.5" width="8" height="13" rx="4" transform="rotate(-38 20 20)" fill="var(--green)"/>
-          <rect x="9"  y="17.5" width="8" height="21" rx="4" transform="rotate(-38 13 28)" fill="var(--ink)"/>
-        </svg>
-        <span class="brand__word">marking<b>mindz</b></span>
+        <svg class="logo" viewBox="0 0 937 153" role="img" aria-label="markingmindz"><use href="#mm-logo"/></svg>
       </a>
       <p>IT services, engineered clean. We build, ship and scale the software your business runs on.</p>
     </div>
@@ -838,11 +1013,75 @@ const termObs = new IntersectionObserver((entries)=>{
 },{ threshold:.3 });
 if(term) termObs.observe(term);
 
-/* ---- Scroll reveal ---- */
+/* ---- Scroll reveal (+ staggered groups) ---- */
 const io = new IntersectionObserver((entries)=>{
   entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
 },{ threshold:.14, rootMargin:'0px 0px -40px 0px' });
-document.querySelectorAll('.r-up').forEach(el => io.observe(el));
+document.querySelectorAll('.r-up, .stagger').forEach(el => io.observe(el));
+
+const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---- Scroll progress bar + nav condense ---- */
+const progress = document.getElementById('progress');
+const nav = document.querySelector('.nav');
+let ticking = false;
+function onScroll(){
+  const st = window.scrollY || document.documentElement.scrollTop;
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  progress.style.width = (h > 0 ? (st / h) * 100 : 0) + '%';
+  nav.classList.toggle('scrolled', st > 12);
+  ticking = false;
+}
+window.addEventListener('scroll', ()=>{ if(!ticking){ requestAnimationFrame(onScroll); ticking = true; } }, { passive:true });
+onScroll();
+
+/* ---- Stat count-up ---- */
+function animateCount(el){
+  const target = parseFloat(el.dataset.count);
+  const dec = parseInt(el.dataset.dec || '0', 10);
+  const suffix = el.dataset.suffix || '';
+  const prefix = el.dataset.prefix || '';
+  if(reduced){ el.textContent = prefix + target.toFixed(dec) + suffix; return; }
+  const dur = 1400; const start = performance.now();
+  function tick(now){
+    const p = Math.min((now - start) / dur, 1);
+    const eased = 1 - Math.pow(1 - p, 3); // easeOutCubic
+    el.textContent = prefix + (target * eased).toFixed(dec) + suffix;
+    if(p < 1) requestAnimationFrame(tick);
+    else el.textContent = prefix + target.toFixed(dec) + suffix;
+  }
+  requestAnimationFrame(tick);
+}
+const countObs = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ animateCount(e.target); countObs.unobserve(e.target); } });
+},{ threshold:.6 });
+document.querySelectorAll('.num[data-count]').forEach(el => countObs.observe(el));
+
+/* ---- Card cursor spotlight ---- */
+if(!reduced){
+  document.querySelectorAll('.card').forEach(card=>{
+    card.addEventListener('pointermove', e=>{
+      const r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+      card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+    });
+  });
+
+  /* ---- Terminal 3D tilt ---- */
+  const termEl = document.getElementById('term');
+  if(termEl){
+    const parent = termEl.parentElement;
+    parent.addEventListener('pointermove', e=>{
+      const r = termEl.getBoundingClientRect();
+      const rx = ((e.clientY - r.top) / r.height - .5) * -6;
+      const ry = ((e.clientX - r.left) / r.width - .5) * 8;
+      termEl.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+    });
+    parent.addEventListener('pointerleave', ()=>{
+      termEl.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+    });
+  }
+}
 </script>
 </body>
 </html>
