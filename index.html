@@ -335,17 +335,171 @@
   </div>
 </section>
 
-<!-- ============ CTA ============ -->
+<!-- ============ QUOTE WIZARD ============ -->
 <section class="section" id="contact" style="padding-top:0">
   <div class="wrap">
-    <div class="cta r-up">
-      <span class="eyebrow">Let's build</span>
-      <h2>Ready to ship something great?</h2>
-      <p>Book a free 30-minute consult. We'll scope your idea, flag the risks, and send a fixed quote — no obligation.</p>
-      <div class="cta__row">
-        <a class="btn btn--primary btn--lg" href="mailto:hello@markingmindz.com">Book a free consult →</a>
-        <a class="btn btn--ghost btn--lg" href="mailto:hello@markingmindz.com" style="--fg:var(--on-dark);border-color:rgba(255,255,255,.2)">hello@markingmindz.com</a>
+    <div class="qwiz r-up" id="qwiz">
+
+      <!-- ---- Left: the wizard ---- -->
+      <div class="qwiz__form">
+        <div class="qwiz__head">
+          <span class="eyebrow">Get a free quote</span>
+          <h2>Let's scope your project.</h2>
+          <p>Answer a few quick questions — watch your build take shape on the right. No obligation, a fixed quote within 24 hours.</p>
+        </div>
+
+        <div class="qwiz__progress" aria-hidden="true">
+          <div class="qwiz__steps">
+            <span class="qwiz-step is-active" data-step="1">1</span>
+            <span class="qwiz-line"><i></i></span>
+            <span class="qwiz-step" data-step="2">2</span>
+            <span class="qwiz-line"><i></i></span>
+            <span class="qwiz-step" data-step="3">3</span>
+          </div>
+        </div>
+
+        <form id="qwizForm" novalidate>
+
+          <!-- Slide 1 -->
+          <div class="qwiz-slide is-active" data-slide="1">
+            <div class="qwiz-field">
+              <label class="qwiz-label">What do you want to build?</label>
+              <div class="qwiz-chips" data-name="project" data-mode="single">
+                <button type="button" class="qwiz-chip" data-value="Web app">Web app</button>
+                <button type="button" class="qwiz-chip" data-value="Mobile app">Mobile app</button>
+                <button type="button" class="qwiz-chip" data-value="Website">Website</button>
+                <button type="button" class="qwiz-chip" data-value="E-commerce">E-commerce</button>
+                <button type="button" class="qwiz-chip" data-value="SaaS platform">SaaS platform</button>
+                <button type="button" class="qwiz-chip" data-value="AI / Automation">AI / Automation</button>
+              </div>
+            </div>
+            <div class="qwiz-field">
+              <label class="qwiz-label">Which platforms? <em>(select all)</em></label>
+              <div class="qwiz-chips" data-name="platforms" data-mode="multi">
+                <button type="button" class="qwiz-chip" data-value="Web">Web</button>
+                <button type="button" class="qwiz-chip" data-value="iOS">iOS</button>
+                <button type="button" class="qwiz-chip" data-value="Android">Android</button>
+                <button type="button" class="qwiz-chip" data-value="Desktop">Desktop</button>
+              </div>
+            </div>
+            <div class="qwiz-field">
+              <label class="qwiz-label">What's the primary goal?</label>
+              <div class="qwiz-chips" data-name="goal" data-mode="single">
+                <button type="button" class="qwiz-chip" data-value="Launch a new product">Launch new</button>
+                <button type="button" class="qwiz-chip" data-value="Redesign / rebuild">Redesign / rebuild</button>
+                <button type="button" class="qwiz-chip" data-value="Add features">Add features</button>
+                <button type="button" class="qwiz-chip" data-value="Not sure yet">Not sure yet</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 2 -->
+          <div class="qwiz-slide" data-slide="2">
+            <div class="qwiz-field">
+              <label class="qwiz-label">Which features do you need? <em>(select all)</em></label>
+              <div class="qwiz-chips" data-name="features" data-mode="multi">
+                <button type="button" class="qwiz-chip" data-value="Authentication">Authentication</button>
+                <button type="button" class="qwiz-chip" data-value="Payments">Payments</button>
+                <button type="button" class="qwiz-chip" data-value="Booking / Scheduling">Booking</button>
+                <button type="button" class="qwiz-chip" data-value="Chat / Messaging">Chat</button>
+                <button type="button" class="qwiz-chip" data-value="Dashboard / Analytics">Dashboard</button>
+                <button type="button" class="qwiz-chip" data-value="Notifications">Notifications</button>
+                <button type="button" class="qwiz-chip" data-value="Maps / Location">Maps</button>
+                <button type="button" class="qwiz-chip" data-value="AI features">AI features</button>
+                <button type="button" class="qwiz-chip" data-value="Admin panel">Admin panel</button>
+              </div>
+            </div>
+            <div class="qwiz-row">
+              <div class="qwiz-field">
+                <label class="qwiz-label" for="qwiz-budget">Budget range</label>
+                <select class="qwiz-select" id="qwiz-budget" data-name="budget">
+                  <option value="">Select a range…</option>
+                  <option value="Under $5k">Under $5,000</option>
+                  <option value="$5k – $15k">$5,000 – $15,000</option>
+                  <option value="$15k – $50k">$15,000 – $50,000</option>
+                  <option value="$50k+">$50,000+</option>
+                  <option value="Not sure yet">Not sure yet</option>
+                </select>
+              </div>
+              <div class="qwiz-field">
+                <label class="qwiz-label">Timeline</label>
+                <div class="qwiz-chips qwiz-chips--tight" data-name="timeline" data-mode="single">
+                  <button type="button" class="qwiz-chip" data-value="ASAP">ASAP</button>
+                  <button type="button" class="qwiz-chip" data-value="1–3 months">1–3 mo</button>
+                  <button type="button" class="qwiz-chip" data-value="3–6 months">3–6 mo</button>
+                  <button type="button" class="qwiz-chip" data-value="Flexible">Flexible</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 3 -->
+          <div class="qwiz-slide" data-slide="3">
+            <div class="qwiz-field">
+              <label class="qwiz-label" for="qwiz-name">Your name *</label>
+              <input class="qwiz-input" id="qwiz-name" data-name="name" type="text" placeholder="Jane Doe" autocomplete="name" />
+            </div>
+            <div class="qwiz-field">
+              <label class="qwiz-label" for="qwiz-company">Company <em>(if any)</em></label>
+              <input class="qwiz-input" id="qwiz-company" data-name="company" type="text" placeholder="Acme Inc." autocomplete="organization" />
+            </div>
+            <div class="qwiz-field">
+              <label class="qwiz-label">Contact number *</label>
+              <div class="qwiz-phone">
+                <select class="qwiz-select" id="qwiz-country" data-name="country" aria-label="Country dial code"></select>
+                <input class="qwiz-input" id="qwiz-phone" data-name="phone" type="tel" placeholder="98765 43210" autocomplete="tel" />
+              </div>
+            </div>
+            <div class="qwiz-field">
+              <label class="qwiz-label" for="qwiz-email">Email *</label>
+              <input class="qwiz-input" id="qwiz-email" data-name="email" type="email" placeholder="jane@company.com" autocomplete="email" />
+            </div>
+            <p class="qwiz-error" id="qwizError" hidden>Please fill in your name, contact number and a valid email.</p>
+          </div>
+
+          <!-- Nav -->
+          <div class="qwiz-nav">
+            <button type="button" class="btn btn--ghost qwiz-back" id="qwizBack" style="--fg:var(--on-dark);border-color:rgba(255,255,255,.2)" hidden>← Back</button>
+            <button type="button" class="btn btn--primary qwiz-next" id="qwizNext">Next →</button>
+            <button type="submit" class="btn btn--primary qwiz-submit" id="qwizSubmit" hidden>Get my free quote →</button>
+          </div>
+        </form>
       </div>
+
+      <!-- ---- Right: live build preview ---- -->
+      <div class="qwiz__preview" aria-hidden="true">
+        <div class="qwiz-build">
+          <div class="qwiz-build__bar">
+            <span class="qwiz-build__dot r"></span><span class="qwiz-build__dot y"></span><span class="qwiz-build__dot g"></span>
+            <span class="qwiz-build__url" id="qwizBuildUrl">— your-project —</span>
+          </div>
+          <div class="qwiz-build__devices" id="qwizBuildDevices">
+            <span class="qwiz-build__device" data-plat="Web">◻ Web</span>
+            <span class="qwiz-build__device" data-plat="iOS">▢ iOS</span>
+            <span class="qwiz-build__device" data-plat="Android">▢ Android</span>
+            <span class="qwiz-build__device" data-plat="Desktop">▢ Desktop</span>
+          </div>
+          <div class="qwiz-build__screen">
+            <div class="qwiz-build__title" id="qwizBuildTitle">Your build</div>
+            <div class="qwiz-build__meta" id="qwizBuildMeta"></div>
+            <div class="qwiz-build__blocks" id="qwizBuildBlocks"></div>
+            <div class="qwiz-build__empty" id="qwizBuildEmpty">Start answering — your build assembles here as you go.</div>
+          </div>
+          <div class="qwiz-build__foot">
+            <div class="qwiz-build__progress"><i id="qwizBuildProgress"></i></div>
+            <span class="qwiz-build__pct" id="qwizBuildPct">Building… 0%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---- Success state ---- -->
+      <div class="qwiz__done" id="qwizDone" hidden>
+        <div class="qwiz__done-mark">✓</div>
+        <h2>Thanks, <span id="qwizDoneName">there</span>!</h2>
+        <p>Your project brief is ready. We'll review your insights and email a fixed quote to <b id="qwizDoneEmail">you</b> within 24 hours.</p>
+        <a class="btn btn--primary btn--lg" id="qwizDoneMail" href="#">Send my brief now →</a>
+      </div>
+
     </div>
   </div>
 </section>
